@@ -1,0 +1,6 @@
+js/*
+node_modules/*
+css/*
+package-lock.json
+.DS_Store
+Thumbs.db
