@@ -3,7 +3,7 @@
  */
 	
 const { doesNotMatch } = require('assert');
-const { src, dest, watch, parallel } = require( 'gulp' );
+const { src, dest, watch, series, parallel } = require( 'gulp' );
 
 const postcss          = require( 'gulp-postcss' ),
 	autoprefixer     = require( 'autoprefixer' ),
@@ -11,7 +11,7 @@ const postcss          = require( 'gulp-postcss' ),
 	bulkSass         = require( 'gulp-sass-bulk-import' ),
 	sass             = require( 'gulp-sass' )( require( 'sass' ) ),
 	sassGlob         = require( 'gulp-sass-glob-use-forward' ),
-	browserSync      = require( 'browser-sync' ),//ブラウザシンク
+	browserSync      = require( 'browser-sync' ).create(),//ブラウザシンク
 	plumber          = require( 'gulp-plumber' ),//エラー通知
 	notify           = require( 'gulp-notify' ),//エラー通知
 	pleeease         = require( 'gulp-pleeease' ),//ベンダープレフィックス
@@ -38,7 +38,7 @@ const postcss          = require( 'gulp-postcss' ),
 	fractal          = require( '@frctl/fractal' ).create();
 
 	const paths = {
-		rootDir   : '/',
+		rootDir   : './',
 		dstrootDir: 'htdocs',
 		srcDir    : { css: 'src/styles/**/*.scss', js: 'src/scripts/**/*.js', img: 'src/images' },
 		dstDir    : { css: 'css', js: 'js', img: 'images' },
@@ -59,6 +59,17 @@ const postcss          = require( 'gulp-postcss' ),
 	fractal.web.set( 'static.path', './htdocs/assets' );
 	fractal.web.set( 'builder.dest', './styleguide' );
 	const logger = fractal.cli.console;
+
+	const browsers = [
+		'last 2 versions',
+		'> 5%',
+		'ie = 11',
+		'not ie <= 10',
+		'ios >= 8',
+		'and_chr >= 5',
+		'Android >= 5',
+	]
+
 /*
  * Sass
  */
@@ -73,14 +84,14 @@ const css = () => {
 	} ) )
 	.pipe( postcss( [
 		autoprefixer( {
-			grid: true,
-			cascade: false
-		} )
+			cascade: false,
+			grid: "autoplace"
+		} ),
 	] ) )
 	.pipe( rename( {
 		sass: true
 	} ) )
-	.pipe( dest( paths.dstDir.css, { sourcemaps: './' } ) );
+	.pipe( dest( paths.dstDir.css, { sourcemaps: paths.rootDir } ) );
 };
 
 // /*
@@ -129,7 +140,7 @@ const js = () => {
 	return browserify( option.bundleOption )
 	.transform( babelify.configure( {
 		compact: false,
-		presets: ['@babel/preset-env'] // gulp-babelでトランスパイル
+		presets: ['@babel/preset-env']
 	} ) )
 	.bundle()
 	.pipe( plumber( { errorHandler: errorAlert } ) )
@@ -137,120 +148,29 @@ const js = () => {
 	.pipe( dest ( paths.dstDir.js ) );
 }
 
-// gulp.task( 'browserify', function ( done ) {
-// 	const option = {
-// 		bundleOption: {
-// 			cache: {}, packageCache: {}, fullPaths: false,
-// 			debug: true,
-// 			entries: './src/scripts/main.js',
-// 			extensions: [ 'js' ]
-// 		},
-// 		dest: './js',
-// 		filename: 'bundle.js'
-// 	};
-// 	const b = browserify ( option.bundleOption )
-// 		.transform( babelify.configure ( {
-// 			compact: false,
-// 			presets: ['@babel/preset-env']
-// 		} ) )
-// 		.transform( browserifyShim );
-// 		bundle = function () {
-// 			b.bundle()
-// 			.pipe( plumber( { errorHandler: errorAlert } ) )
-// 			.pipe( vinyl_source ( option.filename ) )
-// 			.pipe( gulp.dest ( option.dest ) );
-// 		};
-// 	if ( global.isWatching ) {
-// 		const bundler = watchify( b );
-// 		bundler.on( 'update', bundle );
-// 	}
-// 	done();
-// 	return bundle;
-// });
+const server = () => {
+	return browserSync.init( {
+		server: {
+			baseDir: paths.rootDir
+		},
+		notify: true
+	} );
+}
 
-// /*
-//  * Pleeease
-//  */
-// gulp.task( 'pleeease', function() {
-// 	return gulp.src( './style.css' )
-// 		.pipe( pleeease( {
-// 			sass: true,
-// 			minifier: true //圧縮の有無 true/false
-// 		} ) )
-// 		.pipe( postcss ( [
-// 			autoprefixer( {
-// 				cascade: false,
-// 				grid: "autoplace"
-// 			} )
-// 		] ) )
-// 		.pipe( plumber ( {
-// 			errorHandler: notify.onError( 'Error: <%= error.message %>' )
-// 		} ) )
-// 		.pipe( gulp.dest( './' ) );
-// });
+const reload = ( done ) => {
+	browserSync.reload();
+	done();
+}
 
-// /*
-//  * Useref
-//  */
-// gulp.task( 'html', function ( done ) {
-// 	return gulp.src( './**/*.+( html|php )' )
-// 		.pipe( useref( { searchPath: [ '.', 'dev' ] } ) )
-// 		.pipe( gulpif( '*.js', uglify() ) )
-// 		.pipe( gulpif( '*.css', minifyCss() ) )
-// 		.pipe( gulp.dest( paths.dstrootDir ) );
-// 	done();
-// });
+const watchFile = () => {
+	watch( paths.srcDir.css, series( css, reload ) );
+	watch( paths.srcDir.js , series( js,  reload ) );
+}
 
+exports.default = parallel( css, js, watchFile, server );
 
-// /*
-//  * Browser-sync
-//  */
-// gulp.task( 'browser-sync', function( done ) {
-// 	browserSync.init({
-// 		server: {
-// 			baseDir: paths.rootDir,
-// 			routes: {
-// 				"/node_modules": "node_modules"
-// 			}
-// 		},
-// 		// proxy: {
-// 		// 	target: options.path
-// 		// },
-// 		notify: true
-// 	});
-// 	done();
-// });
-// gulp.task( 'bs-reload', function ( done ) {
-// 	browserSync.reload();
-// 	done();
-// });
-
-// gulp.task( 'setWatch', function ( done ) {
-// 	global.isWatching = true;
-// 	done();
-// });
-
-
-// /*
-//  * Default
-//  */
-// gulp.task( 'default', gulp.series( 'browser-sync', function() {
-// 	var bsList = [
-// 		'./**/*.html',
-// 		'./**/*.php',
-// 		'./js/**/*.js',
-// 		'./style.css',
-// 		'./**/*.scss',
-// 		'./**/*._scss',
-// 		'./**/*.png',
-// 		'./**/*.jpg',
-// 		'./**/*.svg'
-// 	];
-// 	gulp.watch( './src/styles/**/*.scss', gulp.task( 'sass' ) );
-// 	gulp.watch( './src/scripts/**/*.js', gulp.task( 'browserify' ) );
-// 	gulp.watch( bsList, gulp.task( 'bs-reload') );
-// }));
-
+exports.css = css;
+exports.js = js;
 
 // /*
 //  * Build
@@ -279,6 +199,3 @@ const js = () => {
 // 		gulp.parallel( 'html', 'devcopy' )
 // 	)
 // );
-
-exports.css = css;
-exports.js = js;
