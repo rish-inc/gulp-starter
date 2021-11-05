@@ -34,6 +34,7 @@ const postcss          = require( 'gulp-postcss' ),
 	util             = require( 'gulp-util' ),
 	path             = require( 'path' ), //path
 	minimist         = require( 'minimist' ),
+	// imagemin         = require( 'gulp-imagemin' ),//画像圧縮
 	cached           = require('gulp-cached'),
 	fractal          = require( '@frctl/fractal' ).create();
 
@@ -94,6 +95,25 @@ const css = () => {
 	.pipe( dest( paths.dstDir.css, { sourcemaps: paths.rootDir } ) );
 };
 
+/*
+ * Imagemin
+ */
+// const imageminifier = ( done ) => {
+// 	const srcImage = paths.srcDir.img + '/**/*.+(jpg|jpeg|png|gif|svg|ico)';
+// 	return src( srcImage )
+// 	.pipe( plumber ( {
+// 		errorHandler: notify.onError( 'Error: <%= error.message %>' )
+// 	} ) )
+// 	.pipe( imagemin( [
+// 		imageMin.svgo(),
+// 		imageMin.optipng(),
+// 		imageMin.gifsicle( { optimizationLevel: 3 } ),
+// 	 ] ) )
+// 	.pipe( dest( paths.dstDir.img ) );
+// 	done();
+// }
+
+
 // /*
 //  * Style Guide
 //  */
@@ -149,7 +169,7 @@ const js = () => {
 }
 
 const server = () => {
-	return browserSync.init( {
+	browserSync.init( {
 		server: {
 			baseDir: paths.rootDir
 		},
@@ -167,10 +187,11 @@ const watchFile = () => {
 	watch( paths.srcDir.js , series( js,  reload ) );
 }
 
-exports.default = parallel( css, js, watchFile, server );
-
 exports.css = css;
 exports.js = js;
+// exports.img = imageminifier;
+
+exports.default = parallel( css, js, watchFile, server );
 
 // /*
 //  * Build

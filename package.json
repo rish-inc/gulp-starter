@@ -1,13 +1,12 @@
 {
-  "name": "themrishv2",
+  "name": "gulp4-refactoring",
   "version": "2.0.0",
-  "description": "WordPress theme develop tool",
+  "description": "gulp4-refactoring",
   "main": "gulpfile.js",
   "engines": {
-    "node": ">=v10.15.0",
-    "npm": "~6.7.0"
-  },
-  "type": "commonjs",
+	  "node": ">=v12.13.1",
+	  "npm": "~6.12.1"
+	},
   "scripts": {
     "watch": "npx gulp",
     "build": "gulp build"
@@ -18,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/yat8823jp/themrish"
+    "url": "git@github.com:yat8823jp/gulp4-refactoring.git"
   },
   "browserslist": [
     "last 2 versions",
@@ -65,8 +64,8 @@
     "gulp-watch": "^5.0.1",
     "imagemin-pngquant": "^9.0.2",
     "minimist": "^1.2.5",
-    "npm": "^8.1.2",
-    "npm-check-updates": "^11.8.5",
+    "npm": "^8.1.3",
+    "npm-check-updates": "^12.0.0",
     "path": "^0.12.7",
     "postcss": "^8.3.11",
     "postcss-cssnext": "^3.1.1",

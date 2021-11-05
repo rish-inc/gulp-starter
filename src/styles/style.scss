@@ -1,16 +1,7 @@
 body {
-    display: flex;
-    justify-content: center;
-    .page {
-        display: grid;
-        grid-gap: 33px;
-        grid-template:
-          "head head  head" 1fr
-          "nav  main  main" minmax(100px, 1fr)
-          "nav  foot  foot" 2fr /
-          1fr   100px 1fr;
-    }
+	display: flex;
+	justify-content: center;
 	.aa {
-		display: flex;
+		display: block;
 	}
 }
