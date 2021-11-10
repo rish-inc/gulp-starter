@@ -34,7 +34,6 @@ const postcss          = require( 'gulp-postcss' ),
 	util             = require( 'gulp-util' ),
 	path             = require( 'path' ), //path
 	minimist         = require( 'minimist' ),
-	// imagemin         = require( 'gulp-imagemin' ),//画像圧縮
 	cached           = require('gulp-cached'),
 	fractal          = require( '@frctl/fractal' ).create();
 
@@ -113,25 +112,6 @@ const styleguideReload = {
 	server: './styleguide/',
 	notify: false
 }
-
-/*
- * Imagemin
- */
-// const imageminifier = ( done ) => {
-// 	const srcImage = paths.srcDir.img + '/**/*.+(jpg|jpeg|png|gif|svg|ico)';
-// 	return src( srcImage )
-// 	.pipe( plumber ( {
-// 		errorHandler: notify.onError( 'Error: <%= error.message %>' )
-// 	} ) )
-// 	.pipe( imagemin( [
-// 		imageMin.svgo(),
-// 		imageMin.optipng(),
-// 		imageMin.gifsicle( { optimizationLevel: 3 } ),
-// 	 ] ) )
-// 	.pipe( dest( paths.dstDir.img ) );
-// 	done();
-// }
-
 
 /*
  * JavaScript
@@ -216,7 +196,6 @@ exports.js = js;
 exports.clean = clean;
 exports.devcopy = series( clean, devcopy );
 exports.build = series( devcopy, styleguideTask );
-// exports.img = imageminifier;
 
 exports.default = parallel( css, js, watchFile, server );
 exports.styleguide = styleguideServer;

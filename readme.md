@@ -34,8 +34,8 @@ make ` ./styleguide ` directory
 
 ```
 /
+├─ images
 ├─ src
-|  ├─ image
 |  ├─ scripts
 |  ├─ styleguide
 |  ├─ styles
