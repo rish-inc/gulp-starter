@@ -22,11 +22,13 @@
 - sass compile
 - styleguide build
 
+make ` ./styleguide ` directory
+
 ### style guide view
 
 ` gulp styleguide `
 
-- Browser sync start
+- styleguide Browser sync start
 
 ## Directory
 
