@@ -32,6 +32,7 @@ make ` ./styleguide ` directory
 
 ## Directory
 
+```
 /
 ├─ src
 |  ├─ image
@@ -39,7 +40,7 @@ make ` ./styleguide ` directory
 |  ├─ styleguide
 |  ├─ styles
 └─ README.md
-
+```
 
 ## Changelog
 
