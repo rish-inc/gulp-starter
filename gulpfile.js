@@ -44,7 +44,7 @@ const postcss          = require( 'gulp-postcss' ),
 		srcDir    : { css: 'src/styles/**/*.scss', js: 'src/scripts/**/*.js', img: 'src/images' },
 		dstDir    : { css: 'css', js: 'js', img: 'images' },
 		serverDir : 'localhost',
-		styleguide: 'css/guid'
+		styleguide: { base: './src/styleguide', css: './src/styleguide/styles/**/*.scss', js: './src/styleguide/scripts/**/*.scss' },
 	};
 
 	const options = minimist( process.argv.slice( 2 ), {
@@ -54,8 +54,8 @@ const postcss          = require( 'gulp-postcss' ),
 		}
 	});
 
-	fractal.set( 'project.title', 'sample' );
-	fractal.components.set( 'path', './src/styleguide/components/' );
+	fractal.set( 'project.title', 'Style guide' );
+	fractal.components.set( 'path', './src/styleguide/' );
 	fractal.docs.set('path', './src/styleguide/docs' );
 	fractal.web.set( 'static.path', './htdocs/assets' );
 	fractal.web.set( 'builder.dest', './styleguide' );
@@ -96,6 +96,25 @@ const css = () => {
 };
 
 /*
+ * Style Guide
+ */
+function styleguideTask() {
+	const builder = fractal.web.builder();
+	builder.on( 'progress', ( completed, total ) => logger.update( `${total} 件中 ${completed} 件目を出力中...`, 'info' ) );
+	builder.on( 'error', err => logger.error( err.message ) );
+	return builder.build().then( () => logger.success( 'スタイルガイドの出力処理が完了しました。' ) );
+}
+
+const styleguideServer = (done) => {
+	browserSync.init( styleguideReload );
+	done();
+}
+const styleguideReload = {
+	server: './styleguide/',
+	notify: false
+}
+
+/*
  * Imagemin
  */
 // const imageminifier = ( done ) => {
@@ -112,28 +131,6 @@ const css = () => {
 // 	.pipe( dest( paths.dstDir.img ) );
 // 	done();
 // }
-
-
-// /*
-//  * Style Guide
-//  */
-// gulp.task( 'styleguide', function() {
-// 	const builder = fractal.web.builder();
-// 	// 出力中のconsole表示設定
-// 	builder.on( 'progress', function( completed, total ) {
-// 	logger.update( `${total} 件中 ${completed} 件目を出力中...`, 'info' );
-// } );
-
-// // 出力失敗時のconsole表示設定
-// 	builder.on( 'error', function() {
-// 		logger.error( err.message );
-// 	});
-
-// 	// 出力処理を実行
-// 	return builder.build().then( function() {
-// 		logger.success( 'スタイルガイドの出力処理が完了しました。' );
-// 	});
-// });
 
 
 /*
@@ -182,6 +179,33 @@ const reload = ( done ) => {
 	done();
 }
 
+
+// /*
+//  * Build
+//  */
+const clean = ( done ) => {
+	return del( [paths.styleguide.base] );
+	done();
+}
+const devcopy = ( done ) => {
+	return src([
+		paths.srcDir.css,
+		paths.srcDir.js,
+		'!./src/scripts/main.js',
+		'!./src/scripts/config.js',
+		'!./src/styles/foundation/*.scss',
+		'!./src/styles/style.scss',
+	], {
+		dot: true
+	} )
+	.pipe( rename ( function ( path ) {
+		path.dirname = '/components/' + path.basename.replace( '_', '' );
+		path.basename = 'style';
+	} ) )
+	.pipe( dest( paths.styleguide.base ) );
+	done();
+};
+
 const watchFile = () => {
 	watch( paths.srcDir.css, series( css, reload ) );
 	watch( paths.srcDir.js , series( js,  reload ) );
@@ -189,34 +213,10 @@ const watchFile = () => {
 
 exports.css = css;
 exports.js = js;
+exports.clean = clean;
+exports.devcopy = series( clean, devcopy );
+exports.build = series( devcopy, styleguideTask );
 // exports.img = imageminifier;
 
 exports.default = parallel( css, js, watchFile, server );
-
-// /*
-//  * Build
-//  */
-// gulp.task( 'clean', function( done ) {
-// 	return del( [paths.dstrootDir] );
-// } );
-// gulp.task( 'devcopy', function ( done ) {
-// 	return gulp.src([
-// 		'./**/*.*',
-// 		'!./src/**',
-// 		'!./**/*.map',
-// 		'!./gulp/**',
-// 		'!./gulpfile.js',
-// 		'!./package.json',
-// 		'!./package-lock.json',
-// 		'!./node_modules/**/*.*'
-// 	], {
-// 		dot: true
-// 	}).pipe( gulp.dest( paths.dstrootDir ) );
-// 	done();
-// });
-
-// gulp.task( 'build',
-// 	gulp.series( 'clean',
-// 		gulp.parallel( 'html', 'devcopy' )
-// 	)
-// );
+exports.styleguide = styleguideServer;

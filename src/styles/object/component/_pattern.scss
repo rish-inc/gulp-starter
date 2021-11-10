@@ -1,0 +1,46 @@
+@use "../../foundation/base.scss";
+@use "../../foundation/variable.scss";
+@use "../../foundation/mixin.scss";
+
+.c-pattern{
+	position: relative;
+	width: 980px;
+	height: 380px;
+	margin-top: 30px;
+	@include mixin.breakpoint( breakpoint-tab ){
+		width: 100%;
+		height: 310px;
+	}
+	@include mixin.breakpoint( breakpoint-sp ){
+		height: 180px;
+	}
+	&__image{
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	&__layer{
+		position: absolute;
+		object-fit: cover;
+		top: 0px;
+		z-index: 1;
+		width: 621px;
+		height: 488px;
+		@include mixin.breakpoint( breakpoint-tab ){
+			top:140px;
+			width: 437px;
+			height: 350px;
+		}
+		@include mixin.breakpoint( breakpoint-sp ){
+			display: none;
+		}
+		&--left{
+			@extend .c-pattern__layer;
+			left: -300px;
+		}
+		&--right{
+			@extend .c-pattern__layer;
+			right: -300px;
+		}
+	}
+}

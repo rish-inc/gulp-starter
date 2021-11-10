@@ -1,0 +1,13 @@
+@use "./variable.scss";
+
+html{
+    background-color : variable.$background-color--main;
+	font-size        : 62.5%
+}
+
+body{
+    font-size        : variable.$font-size--base--pc;
+    font-weight      : variable.$font-weight--normal;
+    font-family      : "Noto Sans Japanese", sans-serif;
+    line-height      : 2.125;     //   Xd行送り34px/文字サイズ16px
+}

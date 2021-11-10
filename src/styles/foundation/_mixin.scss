@@ -1,0 +1,23 @@
+@use "./variable.scss";
+
+/* ブレイクポイント・PCファースト */
+@mixin breakpoint( $breakpoint ){
+	/* tablet */
+	@if $breakpoint == breakpoint-tab{
+		@media( max-width : 1024px ){
+			@content;
+		}
+	}
+	/* SmartPhone */
+	@if $breakpoint == breakpoint-sp{
+		@media( max-width : 599px ){
+			@content;
+		}
+	}
+}
+
+/* 游明朝の指定 */
+@mixin font-yumincho{
+	font-family: "游明朝体", "Yu Mincho", "YuMincho", serif;	// Windows用, mac用, その他
+    font-weight: variable.$font-weight--normal;					// normal:400
+}
