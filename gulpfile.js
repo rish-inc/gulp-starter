@@ -1,9 +1,12 @@
 /*
  * Global variables
  */
-	
+
+
 const { doesNotMatch } = require('assert');
 const { src, dest, watch, series, parallel } = require( 'gulp' );
+
+// import gulpimagemin from 'gulp-imagemin';
 
 const postcss          = require( 'gulp-postcss' ),
 	autoprefixer     = require( 'autoprefixer' ),
@@ -159,6 +162,12 @@ const reload = ( done ) => {
 	done();
 }
 
+// const imagemin = ( done ) => {
+// 	return src( 'src/images/*' )
+// 	.pipe( gulpimagemin )
+// 	.pipe( dest.images );
+// 	done();
+// }
 
 // /*
 //  * Build
@@ -193,6 +202,7 @@ const watchFile = () => {
 
 exports.css = css;
 exports.js = js;
+// exports.image = imagemin;
 exports.clean = clean;
 exports.devcopy = series( clean, devcopy );
 exports.build = series( devcopy, styleguideTask );
