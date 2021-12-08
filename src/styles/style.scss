@@ -15,16 +15,16 @@ layout
 /* --------------------------------------------------------
 project
 -------------------------------------------------------- */
-@forward "./object/project/document.scss";
-@forward "./object/project/post-card";
+// @forward "./object/project/document.scss";
+// @forward "./object/project/post-card";
 
 /* --------------------------------------------------------
 component
 -------------------------------------------------------- */
-@use './object/component/background';
-@forward "./object/component/button";
+// @use './object/component/background';
+// @forward "./object/component/button";
 @use './object/component/title';
-@forward "./object/component/text";
-@use './object/component/bullet';
-@forward "./object/component/definition";
-@forward './object/component/pattern';
+// @forward "./object/component/text";
+// @use './object/component/bullet';
+// @forward "./object/component/definition";
+// @forward './object/component/pattern';

@@ -43,8 +43,8 @@ const postcss          = require( 'gulp-postcss' ),
 	const paths = {
 		rootDir   : './',
 		dstrootDir: 'htdocs',
-		srcDir    : { css: 'src/styles/**/*.scss', js: 'src/scripts/**/*.js', img: 'src/images' },
-		dstDir    : { css: 'css', js: 'js', img: 'images' },
+		srcDir    : { css: './src/styles/**/*.scss', js: './src/scripts/**/*.js', img: './src/images' },
+		dstDir    : { css: './css', js: './js', img: './images' },
 		serverDir : 'localhost',
 		styleguide: { base: './src/styleguide', css: './src/styleguide/styles/**/*.scss', js: './src/styleguide/scripts/**/*.scss' },
 	};
