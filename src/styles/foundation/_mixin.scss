@@ -17,5 +17,5 @@
 
 /* rem */
 @mixin font-rem( $font-size-px, $root-font-size: 16 ) {
-	font-size: math.div( ( $root-font-size * 1rem ), $font-size-px );
+	font-size: math.div( $font-size-px, $root-font-size ) * 1rem;
 }
