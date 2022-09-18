@@ -19,3 +19,8 @@
 @mixin font-rem( $font-size-px, $root-font-size: 16 ) {
 	font-size: math.div( $font-size-px, $root-font-size ) * 1rem;
 }
+
+/* letter-spacing */
+@mixin letter-spacing( $spacing-size, $root-font-size: 16 ) {
+	letter-spacing: $spacing-size * 0.001em;
+}
