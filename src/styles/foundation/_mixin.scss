@@ -1,23 +1,21 @@
+@use "sass:math";
 @use "./variable.scss";
 
-/* ブレイクポイント・PCファースト */
 @mixin breakpoint( $breakpoint ){
 	/* tablet */
-	@if $breakpoint == breakpoint-tab{
-		@media( max-width : 1024px ){
+	@if $breakpoint == tablet {
+		@media( min-width : 600px ){
 			@content;
 		}
 	}
-	/* SmartPhone */
-	@if $breakpoint == breakpoint-sp{
-		@media( max-width : 599px ){
+	@if $breakpoint == pc {
+		@media( min-width : 768px ){
 			@content;
 		}
 	}
 }
 
-/* 游明朝の指定 */
-@mixin font-yumincho{
-	font-family: "游明朝体", "Yu Mincho", "YuMincho", serif;	// Windows用, mac用, その他
-    font-weight: variable.$font-weight--normal;					// normal:400
+/* rem */
+@mixin font-rem( $font-size-px, $root-font-size: 16 ) {
+	font-size: math.div( ( $root-font-size * 1rem ), $font-size-px );
 }
