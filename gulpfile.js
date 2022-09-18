@@ -198,6 +198,7 @@ const devcopy = ( done ) => {
 const watchFile = () => {
 	watch( paths.srcDir.css, series( css, reload ) );
 	watch( paths.srcDir.js , series( js,  reload ) );
+	watch( '*.html'        , series( reload ) );
 }
 
 exports.css = css;
